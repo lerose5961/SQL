@@ -1,0 +1,15 @@
+/*explore the data*/
+SELECT * FROM topmovies;
+
+/*which studios made the most money*/
+SELECT studio, SUM(worldwide)AS studio_worldwide
+FROM topmovies
+GROUP BY studio
+HAVING studio_worldwide > 10000
+ORDER BY studio_worldwide DESC;
+
+/*which years had the most top films*/
+SELECT COUNT(title) AS num_per_year, year FROM topmovies
+GROUP BY year
+HAVING num_per_year >= 3
+ORDER BY year DESC;
