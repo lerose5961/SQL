@@ -1,0 +1,35 @@
+/*top 50 highest population*/
+SELECT * FROM countries
+ORDER BY population DESC
+LIMIT 50;
+
+/*CASE statement sorting by percent population*/
+SELECT name, population, percent_of_world_pop,
+    CASE
+        WHEN percent_of_world_pop > 10 THEN "large country"
+        WHEN percent_of_world_pop > 3 THEN "medium country"
+        WHEN percent_of_world_pop > 1 THEN "small country"
+        ELSE "tiny country"
+    END AS country_size
+FROM countries;
+
+/*sort countries with CASE statement related to median age of population*/
+SELECT name, median_age,
+    CASE
+        WHEN median_age > 40 THEN "oldest country"
+        WHEN median_age > 30 THEN "older country"
+        WHEN median_age > 20 THEN "young country"
+        ELSE "very young country"
+    END AS country_age
+FROM countries
+ORDER BY median_age;
+
+/*find countries with highest density and population*/
+SELECT name, population, density_per_sq_km
+FROM countries
+WHERE population > 50000000 AND density_per_sq_km > 100
+ORDER BY density_per_sq_km DESC;
+
+/*find the average, mean, max population*/
+SELECT AVG(population) AS avg_pop, MAX(population) AS max_pop, MIN(population) AS min_pop
+FROM countries;
