@@ -1,0 +1,52 @@
+#create movie store database
+CREATE TABLE movies(id INTEGER PRIMARY KEY, movie_name TEXT, genre TEXT, gross_dollars INTEGER, release_year INTEGER, quantity INTEGER);
+
+#add data to table
+INSERT INTO movies 
+  VALUES(1, "Avatar", "superhero", 2790439000, 2009, 3);
+INSERT INTO movies 
+  VALUES(2, "Avengers: Endgame", "superhero", 2797800564, 1997, 4);
+INSERT INTO movies 
+  VALUES(3, "Titanic", "drama", 2194439542, 1997, 2);
+INSERT INTO movies 
+  VALUES(4, "Star Wars: The Force Awakens", "scifi", 2068223624, 2015, 5);
+INSERT INTO movies 
+  VALUES(5, "Avengers: Infinity War", "superhero", 2048359754, 2018, 3);
+INSERT INTO movies 
+  VALUES(6, "Jurassic World", "adventure", 1671713208, 2015, 7);
+INSERT INTO movies 
+  VALUES(7, "The Lion King", "animated", 1656943394, 2019, 4);
+INSERT INTO movies 
+  VALUES(8, "The Avengers", "superhero", 1518812988, 2012, 6);
+INSERT INTO movies 
+  VALUES(9, "Furious 7", "action", 1516045911, 2015, 8);
+INSERT INTO movies 
+  VALUES(10, "Frozen II", "animated", 1450026933, 2019, 3);
+INSERT INTO movies 
+  VALUES(11, "Avengers: Age of Ultron", "superhero", 1402805868, 2015, 2);
+INSERT INTO movies 
+  VALUES(12, "Black Panther", "superhero", 13469143161, 2018, 10);
+INSERT INTO movies 
+  VALUES(13, "Harry Potter and the Deathly Hallows - Part 2", "fantasy", 1341693157, 2011, 7);
+INSERT INTO movies 
+  VALUES(14, "Star Wars: The Last Jedi", "scifi", 1332539889, 2017, 6);
+INSERT INTO movies 
+  VALUES(15, "Jurassic World: Fallen Kingdom", "adventure", 1309484461, 2018, 3);
+
+#display entire table
+SELECT * FROM movies;
+
+#display movie name and release year in order from newest to oldest
+SELECT movie_name, release_year
+FROM movies 
+ORDER BY release_year DESC;
+
+#display movie name and quantity in order of quantity available
+SELECT movie_name, quantity 
+FROM movies 
+ORDER BY quantity DESC;
+
+#display all Avengers movies
+SELECT movie_name, release_year 
+FROM movies 
+WHERE movie_name LIKE "%Avengers%";
