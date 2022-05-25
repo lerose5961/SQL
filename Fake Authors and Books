@@ -1,0 +1,78 @@
+/* Create table about the people and what they do here */
+
+CREATE TABLE authors(id INTEGER PRIMARY KEY,         fullname TEXT, email TEXT, number_of_books INTEGER);
+/*author 1*/
+INSERT INTO authors(fullname, email, number_of_books)
+    VALUES("Green Grass", "green.grass@google.com", 3);
+/*author 2*/
+INSERT INTO authors(fullname, email, number_of_books)
+    VALUES("Blue Sky", "blue.sky@google.com", 4);
+/*author 3*/
+INSERT INTO authors(fullname, email, number_of_books)
+    VALUES("Grey Cloud", "grey.cloud@google.com", 2);
+/*author 4*/
+INSERT INTO authors(fullname, email, number_of_books)
+    VALUES("Yellow Sun", "yellow.sun@google.com", 1);
+/*author 5*/
+INSERT INTO authors(fullname, email, number_of_books)
+    VALUES("Orange Tree", "orange.tree@google.com", 5);
+    
+CREATE TABLE books(id INTEGER PRIMARY KEY, title TEXT, rating INTEGER, author_id INTEGER, genre_id INTEGER);
+
+INSERT INTO books(title, rating, author_id, genre_id)
+    VALUES("Mowing the Lawn", 4, 1, 1);
+INSERT INTO books(title, rating, author_id, genre_id)
+    VALUES("Trimming the Hedges", 5, 1,1);
+INSERT INTO books(title, rating, author_id, genre_id)
+    VALUES("Sprinklers", 3, 1, 2);
+INSERT INTO books(title, rating, author_id, genre_id)
+    VALUES("Rainbows", 5, 2, 3);
+INSERT INTO books(title, rating, author_id, genre_id)
+    VALUES("Clear Day", 3, 2, 3);
+INSERT INTO books(title, rating, author_id, genre_id)
+    VALUES("Rain Go Away", 2, 2, 5);
+INSERT INTO books(title, rating, author_id, genre_id)
+    VALUES("Blue For Miles", 5, 2, 4);
+INSERT INTO books(title, rating, author_id, genre_id)
+    VALUES("Cloud Shapes", 1, 3, 5);
+INSERT INTO books(title, rating, author_id, genre_id)
+    VALUES("Types of Clouds", 4, 3, 2);
+INSERT INTO books(title, rating, author_id, genre_id)
+    VALUES("Burning Bright", 5, 4, 3);
+INSERT INTO books(title, rating, author_id, genre_id)
+    VALUES("Falling Leaves", 3, 5, 3);
+INSERT INTO books(title, rating, author_id, genre_id)
+    VALUES("Leaf Piles", 4, 5, 2);
+INSERT INTO books(title, rating, author_id, genre_id)
+    VALUES("Raking Leaves", 2, 5, 1);
+INSERT INTO books(title, rating, author_id, genre_id)
+    VALUES("Pumpkin Spice Latte", 5, 5, 5);
+INSERT INTO books(title, rating, author_id, genre_id)
+    VALUES("Shades of Fall", 5, 5, 4);
+    
+CREATE TABLE genre(id INTEGER PRIMARY KEY, genre_name TEXT);
+INSERT INTO genre(genre_name)
+    VALUES("horror");
+INSERT INTO genre(genre_name)
+    VALUES("how to");
+INSERT INTO genre(genre_name)
+    VALUES("romance");
+INSERT INTO genre(genre_name)
+    VALUES("thriller");
+INSERT INTO genre(genre_name)
+    VALUES("scifi");
+
+
+#find authors and their corresponding book titles with 3* review or better
+SELECT a.fullname, b.title 
+FROM authors AS a
+JOIN books AS b
+ON a.id = b.author_id
+WHERE b.rating >= 3;
+
+#find genre and author of each book title
+SELECT a.fullname, b.title, g.genre_name FROM authors AS a
+JOIN books AS b
+ON a.id = b.author_id
+JOIN genre AS g
+ON b.genre_id = g.id;
