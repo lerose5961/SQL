@@ -12,11 +12,8 @@ FROM "CharlotteChaze/BreakIntoTech"."netflix_titles_info"
 WHERE type = 'Movie';
 
 #3 When was most recent batch added to database?
-SELECT title, date_added 
-FROM "CharlotteChaze/BreakIntoTech"."netflix_titles_info"
-WHERE date_added IS NOT NULL
-ORDER BY date_added DESC
-LIMIT 1;
+SEKECT MAX(date(date_added))
+FROM "CharlotteChaze/BreakIntoTech"."netflix_titles_info";
 
 #4 List all the movies and tv shows in alphabetical order.
 SELECT title
