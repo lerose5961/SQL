@@ -1,0 +1,44 @@
+#In this code, I am creating an app that stores information about library books.
+CREATE TABLE library (
+    id INTEGER PRIMARY KEY,
+    title TEXT,
+    author TEXT,
+    num_pages INTEGER,
+    rating INTEGER
+    );
+
+#I inserted data into the table.
+INSERT INTO library (title, author, num_pages, rating)
+    VALUES ("A is for Apple", "Arthur Aardvark", 148, 5); 
+
+
+INSERT INTO library (title, author, num_pages, rating)
+    VALUES ("B is for Banana", "Bob Buffalo", 257, 4);
+    
+INSERT INTO library (title, author, num_pages, rating)
+    VALUES ("C is for Carrot", "Cameron Cat", 321, 4);
+
+INSERT INTO library (title, author, num_pages, rating)
+    VALUES ("D is for Dragonfruit", "Daniel Dog", 126, 5);
+
+INSERT INTO library (title, author, num_pages, rating)
+    VALUES ("E is for Eggfruit", "Elbert Elephant", 576, 3);
+    
+INSERT INTO library (title, author, num_pages, rating)
+    VALUES ("F is for Fig", "Frank Ferret", 100, 4);
+    
+INSERT INTO library (title, author, num_pages, rating)
+    VALUES ("G is for Grapes", "Gerald Giraffe", 234, 5); 
+
+#I added a final column, price.
+ALTER TABLE library ADD COLUMN price INTEGER;
+
+#I inserted another book into the table, including the price column.
+INSERT INTO library (title, author, num_pages, rating, price)
+    VALUES ("H is for Huckleberry", "Harper Horse", 457, 5, 10); 
+
+#I updated the author name in one of the entries. 
+UPDATE library SET author = "Cameron Crab" WHERE id = 3;
+
+#I deleted a row from the table. 
+DELETE FROM library WHERE id = 2;
