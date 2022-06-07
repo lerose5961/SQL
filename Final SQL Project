@@ -1,0 +1,44 @@
+#In this SQL project, I am querying a database that contains 11 tables to find and analyze information.
+
+#First I queried the customers table to find all customers who were not in the United States.
+SELECT firstname, lastname, country, customerid 
+FROM chinook.customers
+WHERE country != 'USA' AND country IS NOT NULL
+ORDER BY country;
+
+#Next I found information about the number of customers from each country.
+SELECT country, COUNT(country) AS num_of_customers
+FROM chinook.customers
+GROUP BY country
+ORDER by num_of_customers DESC;
+
+#I also queried the customers table to find all of the customers located in Canada.
+SELECT customerid, firstname, lastname
+FROM chinook.customers
+WHERE country = 'Canada';
+
+#Then I looked at the customers from Canada and their invoices, dated by most recent invoice.
+SELECT c.firstname, c.lastname, i.invoiceid, i.invoicedate, i.billingcountry
+FROM chinook.customers AS c
+JOIN chinook.invoices AS i
+ON c.customerid = i.customerid
+WHERE c.country = 'Canada'
+ORDER BY i.invoicedate DESC;
+
+#I looked at which employees were sales agents.
+SELECT * 
+FROM chinook.employees
+WHERE title LIKE '%sales support%';
+
+#I looked for the distinct billing codes within the USA.
+SELECT DISTINCT billingpostalcode
+FROM chinook.invoices
+WHERE billingpostalcode IS NOT NULL AND billingcountry = 'USA';
+
+#I found the employees associated with each invoice.
+SELECT e.lastname, e.firstname, i.invoiceid
+FROM chinook.employees AS e
+JOIN chinook.customers AS c
+ON c.supportrepid = e.employeeid
+JOIN chinook.invoices AS i
+ON c.customerid = i.customerid;
