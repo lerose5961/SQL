@@ -42,3 +42,16 @@ JOIN chinook.customers AS c
 ON c.supportrepid = e.employeeid
 JOIN chinook.invoices AS i
 ON c.customerid = i.customerid;
+
+#Next I showed the Invoice Total, Customer name, Country, and Sales Agent name for all invoices and customers.
+
+SELECT inv.total, 
+cust.FirstName || ' ' || cust.LastName AS cust_name,
+cust.country,
+emp.FirstName || ' ' || emp.LastName AS employee_name
+FROM chinook.invoices AS inv
+JOIN chinook.customers AS cust
+ON inv.customerid = cust.customerid
+JOIN chinook.employees AS emp
+ON emp.employeeid = cust.supportrepid
+ORDER BY inv.total DESC;
