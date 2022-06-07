@@ -39,7 +39,7 @@ SELECT
     i.invoicedate, 
     i.billingcountry
 FROM chinook.customers AS c
-JOIN chinook.invoices AS i
+LEFT JOIN chinook.invoices AS i
     ON c.customerid = i.customerid
 WHERE c.country = 'Canada'
 ORDER BY i.invoicedate DESC;
