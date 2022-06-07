@@ -1,57 +1,253 @@
 #In this SQL project, I am querying a database that contains 11 tables to find and analyze information.
 
-#First I queried the customers table to find all customers who were not in the United States.
-SELECT firstname, lastname, country, customerid 
+#I queried the customers table to find all customers who were not in the United States.
+
+SELECT 
+    firstname, 
+     lastname, 
+     country, 
+     customerid 
 FROM chinook.customers
-WHERE country != 'USA' AND country IS NOT NULL
+WHERE country != 'USA' 
+    AND country IS NOT NULL
 ORDER BY country;
 
-#Next I found information about the number of customers from each country.
-SELECT country, COUNT(country) AS num_of_customers
+#I found information about the number of customers from each country.
+
+SELECT 
+    country, 
+    COUNT(country) AS num_of_customers
 FROM chinook.customers
 GROUP BY country
 ORDER by num_of_customers DESC;
 
 #I also queried the customers table to find all of the customers located in Canada.
-SELECT customerid, firstname, lastname
+
+SELECT 
+    customerid, 
+    firstname, 
+    lastname
 FROM chinook.customers
 WHERE country = 'Canada';
 
-#Then I looked at the customers from Canada and their invoices, dated by most recent invoice.
-SELECT c.firstname, c.lastname, i.invoiceid, i.invoicedate, i.billingcountry
+#I looked at the customers from Canada and their invoices, dated by most recent invoice.
+
+SELECT 
+    c.firstname, 
+    c.lastname, 
+    i.invoiceid, 
+    i.invoicedate, 
+    i.billingcountry
 FROM chinook.customers AS c
 JOIN chinook.invoices AS i
-ON c.customerid = i.customerid
+    ON c.customerid = i.customerid
 WHERE c.country = 'Canada'
 ORDER BY i.invoicedate DESC;
 
 #I looked at which employees were sales agents.
+
 SELECT * 
 FROM chinook.employees
 WHERE title LIKE '%sales support%';
 
 #I looked for the distinct billing codes within the USA.
+
 SELECT DISTINCT billingpostalcode
 FROM chinook.invoices
-WHERE billingpostalcode IS NOT NULL AND billingcountry = 'USA';
+WHERE billingpostalcode IS NOT NULL 
+    AND billingcountry = 'USA';
 
 #I found the employees associated with each invoice.
-SELECT e.lastname, e.firstname, i.invoiceid
+
+SELECT 
+    e.lastname, 
+     e.firstname, 
+     i.invoiceid
 FROM chinook.employees AS e
 JOIN chinook.customers AS c
-ON c.supportrepid = e.employeeid
+    ON c.supportrepid = e.employeeid
 JOIN chinook.invoices AS i
-ON c.customerid = i.customerid;
+    ON c.customerid = i.customerid;
 
-#Next I showed the Invoice Total, Customer name, Country, and Sales Agent name for all invoices and customers.
+#I showed the Invoice Total, Customer name, Country, and Sales Agent name for all invoices and customers.
 
-SELECT inv.total, 
-cust.FirstName || ' ' || cust.LastName AS cust_name,
-cust.country,
-emp.FirstName || ' ' || emp.LastName AS employee_name
+SELECT 
+    inv.total, 
+    cust.FirstName || ' ' || cust.LastName AS cust_name,
+    cust.country,
+    emp.FirstName || ' ' || emp.LastName AS employee_name
 FROM chinook.invoices AS inv
 JOIN chinook.customers AS cust
-ON inv.customerid = cust.customerid
+    ON inv.customerid = cust.customerid
 JOIN chinook.employees AS emp
-ON emp.employeeid = cust.supportrepid
+    ON emp.employeeid = cust.supportrepid
 ORDER BY inv.total DESC;
+
+#I looked to see how many invoices there were in the year 2009 and then in all years.
+
+SELECT COUNT(*)
+FROM chinook.invoices
+WHERE InvoiceDate BETWEEN '2009-01-01' AND '2009-12-31';
+
+SELECT 
+    COUNT(*), 
+    SUBSTR(invoicedate, 1, 4) AS year
+FROM chinook.Invoices
+GROUP BY year
+
+#I looked at the total sales in 2009, as well as the rounded total sales for the remaining years.
+
+SELECT SUM(total)
+FROM chinook.invoices
+WHERE InvoiceDate BETWEEN '2009-01-01' AND '2009-12-31';
+
+SELECT 
+    ROUND(SUM(total)) AS rounded_total, 
+    SUBSTR(invoicedate, 1, 4) AS year
+FROM chinook.invoices
+WHERE invoicedate > '2009-12-31'
+GROUP BY year;
+
+#I looked for the purchased tracks and invoice line items. I also queried the database to find purchased tracks, the artists and composers of the purchased tracks, and invoice line items
+
+SELECT 
+    t.Name, 
+    i.InvoiceLineId
+FROM chinook.Invoice_items i
+JOIN chinook.Tracks t 
+    ON i.TrackId = t.TrackId;
+
+SELECT 
+    art.name, 
+    t.Name, 
+    t.composer, 
+    i.InvoiceLineId
+FROM invoice_items AS i
+JOIN tracks AS t 
+    ON i.TrackId = t.TrackId
+JOIN albums AS a 
+    ON a.albumid = t.albumid
+JOIN artists AS art 
+    ON art.artistid = a.artistid
+ORDER BY i.invoicelineid;
+
+#I wrote a query that shows all the Tracks, and include the Album name, Media type, and Genre.
+
+SELECT 
+    t.name AS track_name, 
+    a.title AS album_title, 
+    m.name AS type_of_media, 
+    g.name AS genre
+FROM tracks AS t
+JOIN albums AS a
+    ON t.albumid = a.albumid
+JOIN media_types AS m
+    ON t.mediatypeid = m.mediatypeid
+JOIN genres AS g
+    ON t.genreid = g.genreid
+ORDER BY album_title;
+
+#I found the total sales by each sales agent.
+
+SELECT 
+    e.firstname || ' ' || e.lastname AS full_name, 
+    ROUND(SUM(inv.total), 2) AS total_sales
+FROM employees AS e
+JOIN customers AS c 
+    ON e.employeeID = c.supportrepid
+JOIN invoices AS inv 
+    ON inv.customerid = c.customerid
+WHERE e.title = 'Sales Support Agent'
+GROUP BY e.employeeID;
+
+#I found which sales agent had the most sales in 2012.
+
+SELECT 
+    e.firstname || ' ' || e.lastname AS full_name, 
+    ROUND(SUM(inv.total), 2) AS total_sales
+FROM employees AS e
+JOIN customers AS c 
+    ON e.employeeID = c.supportrepid
+JOIN invoices AS inv 
+    ON inv.customerid = c.customerid
+WHERE e.title = 'Sales Support Agent' 
+    AND inv.invoicedate BETWEEN '2012-01-01' AND '2012-12-31'
+GROUP BY e.employeeID
+ORDER BY total_sales DESC
+LIMIT 1
+
+#I found all of the playlist names, as well as the track names, artists, and genres of each track. 
+
+SELECT
+    p.name AS playlist_name,
+    t.name AS track_name,
+    a.name AS artist_name,
+    g.name AS genre
+FROM playlists AS p
+JOIN playlist_track AS p_t
+    ON p.playlistid = p_t.playlistid
+JOIN tracks AS t
+    ON t.trackid = p_t.trackid
+JOIN albums 
+    ON albums.AlbumId = t.albumid
+JOIN artists AS a
+    ON a.artistID = albums.ArtistId
+JOIN genres AS g 
+    ON g.genreid = t.genreid
+ORDER BY playlist_name;
+
+#I found the number of invoices from each city.
+
+SELECT 
+    billingcity, 
+    billingcountry, 
+    COUNT(billingcity) AS invoices_from_city
+FROM invoices
+GROUP BY billingcity
+ORDER BY invoices_from_city DESC;
+
+#I found the total sales per customer.
+
+SELECT 
+    c.firstname || ' ' || c.lastname AS cust_fullname,
+    '$'  || ROUND(SUM(inv.total), 2) AS total_per_customer
+FROM customers AS c
+JOIN invoices AS inv
+    ON c.customerid = inv.customerid
+GROUP BY cust_fullname
+ORDER BY total_per_customer DESC;
+
+#I found the format of the most expensive invoices.
+
+SELECT 
+    inv.total,
+    t.name,
+    m.name
+FROM invoices AS inv
+JOIN invoice_items AS inv_i
+    ON inv.invoiceid = inv_i.invoiceid
+JOIN tracks AS t
+    ON t.trackid = inv_i.trackid
+JOIN media_types AS m
+    ON m.mediatypeid = t.mediatypeid
+ORDER BY total DESC;
+
+#I wanted to know more information about the invoices including the track name, artists, and albums associated with each invoice item. 
+
+SELECT 
+    inv_items.trackid, 
+    inv_items.quantity,
+    t.name AS track_name,
+    a.name AS artist_name,
+    albums.title,
+    i.total
+FROM invoice_items AS inv_items
+JOIN tracks AS t
+    ON t.trackid = inv_items.trackid
+JOIN invoices AS i
+    ON i.invoiceid = inv_items.invoiceid
+JOIN albums
+    ON albums.albumid = t.albumid
+JOIN artists AS a
+    ON a.artistid = albums.artistid
+ORDER BY total DESC;
