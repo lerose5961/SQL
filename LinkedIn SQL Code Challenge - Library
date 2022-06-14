@@ -1,0 +1,57 @@
+#Determine number of available copies of Dracula.
+
+SELECT
+(SELECT COUNT(title) FROM books
+WHERE title = 'Dracula')
+-
+(SELECT COUNT(books.title) FROM loans
+JOIN books 
+ON loans.bookid = books.bookid
+WHERE books.title = 'Dracula' AND loans.returneddate IS NULL)
+AS available_books;
+
+#Check out two books to a patron.
+
+INSERT INTO loans (bookID, patronID, loandate, duedate)
+VALUES 
+((SELECT bookID FROM books WHERE barcode = 2855934983), (SELECT patronID from patrons WHERE email = 'jvaan@wisdompets.com'), '2020-08-25', '2020-09-08'),
+((SELECT bookID FROM books WHERE barcode = 4043822646), (SELECT patronID from patrons WHERE email = 'jvaan@wisdompets.com'), '2020-08-25', '2020-09-08');
+
+#Find information about books due back on a specific date.
+
+SELECT books.title,
+books.author,
+loans.loandate, 
+loans.duedate, 
+pat.firstname || ' ' || pat.lastname AS patron_name, 
+pat.email
+FROM loans
+LEFT JOIN books ON loans.bookid = books.bookid
+LEFT JOIN patrons AS pat ON pat.patronid = loans.patronid
+WHERE loans.duedate = '2020-07-13' AND loans.returneddate IS NULL;
+
+#Determine which patrons have checked out the fewest books. 
+
+SELECT COUNT(loans.loanid) AS num_checked_out, 
+p.firstname|| ' ' || p.lastname AS patron_name, 
+p.email
+FROM loans
+LEFT JOIN patrons AS p
+ON p.patronid = loans.patronid
+GROUP BY loans.patronID
+ORDER BY num_checked_out
+LIMIT 10;
+
+#Find various book statistics.
+
+SELECT published, COUNT(DISTINCT title) publishedcount
+FROM books
+GROUP by published
+ORDER BY publishedcount DESC;
+
+SELECT b.title, b.author, COUNT(l.bookid) AS checkedout
+FROM books AS b
+JOIN loans AS l ON b.bookid = l.bookid
+GROUP BY b.title
+ORDER BY checkedout DESC
+LIMIT 5;
