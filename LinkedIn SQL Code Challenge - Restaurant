@@ -1,0 +1,108 @@
+#Find the first name, last name, and email for all customers in the restaurant database
+
+SELECT 
+  lastname || ', ' || firstname AS full_name,
+  email 
+FROM customers
+ORDER BY lastname, firstname;
+
+#Create a table for customer responses to restaurant invitation
+
+CREATE TABLE PartyResponses(
+    customerID INT,
+    party_size INT,
+    FOREIGN KEY(customerID) references customers(customerID)
+    );
+    
+#Create three menus: one with all items, ordered by price; one with only beverages and appetizers, ordered by type of dish; and one with all items except beverages, ordered by type of dish. I chose to order secondarily by price.
+
+SELECT * 
+FROM dishes
+ORDER BY price DESC;
+
+SELECT * 
+FROM dishes
+WHERE type = 'Beverage' OR type = 'Appetizer'
+ORDER BY type, price DESC;
+
+SELECT *
+FROM dishes
+WHERE type != 'Beverage'
+ORDER BY type, price;
+
+#Sign a customer up for the loyalty program.
+
+INSERT INTO customers (firstname, lastname, email, address, city, state, phone, birthday, favoritedish)
+VALUES ("Brava", "Brown", "bravabrown@gmail.com", "123 Main Street", "Philadelphia", "PA", "123-555-5555", "09/09/1999", 17);
+
+#Update a customer's address on file.
+
+UPDATE customers
+SET address = '74 Pine St.',
+    city = 'New York',
+    state = 'NY'
+WHERE customerID = 26;
+
+#Delete a customer's record who has moved away.
+
+DELETE FROM customers
+WHERE customerID = 4;
+
+#Log a customer's response to the restaurant invitation.
+
+INSERT INTO partyresponses (customerID, party_size)
+VALUES ((SELECT customerID FROM customers WHERE email = 'atapley2j@kinetecoinc.com'), 4);
+
+#Look up a customer's reservation with an unclear last name.
+
+SELECT * FROM customers AS cust
+JOIN reservations AS res
+ON cust.customerid = res.customerid
+WHERE lastname LIKE '%Ste%'
+    AND res.date LIKE '%06-14%';
+    
+#Add a delivery order to an existing customer. I first found the customer's customerID. 
+
+SELECT * FROM customers 
+WHERE firstname = 'Loretta';
+
+##Next I entered the order using the customerID.
+
+INSERT INTO orders (orderID, customerID, orderdate)
+VALUES(1001, 70, "2022-06-14 18:00:00");
+
+##Then I added the dishes to the order.
+
+INSERT INTO ordersdishes (ordersdishesID, orderid, dishid)
+VALUES 
+    (4022, 1001, 7),
+    (4023, 1001, 4),
+    (4024, 1001, 20);
+    
+##Finally, I found the total price the customer owed. 
+
+SELECT SUM(dishes.price) AS totalcost
+FROM dishes
+LEFT JOIN ordersdishes AS od
+ON od.dishid = dishes.DishID
+WHERE od.orderid = 1001;
+
+#I updated a customer's favorite dish.
+
+UPDATE customers
+SET favoritedish = (SELECT dishID FROM dishes WHERE name LIKE '%quinoa%')
+WHERE customerID = 42;
+
+#I found the top 5 customers with the most to-go orders. 
+
+SELECT COUNT(orders.orderid) num_orders, 
+    cust.firstname || ' ' || cust.lastname AS customer_name,
+    cust.email
+FROM orders
+LEFT JOIN customers AS cust
+ON cust.customerid = orders.customerid
+GROUP BY orders.customerid
+ORDER BY num_orders DESC
+LIMIT 5;
+
+
