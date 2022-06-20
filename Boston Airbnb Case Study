@@ -1,0 +1,63 @@
+# I wanted to look at Boston Airbnb data to answer questions about the vacation rental market in the Boston area. I analyzed how neighborhoods or amenities influence Airbnb prices, what listings are rented most frequently, and where super hosts are located.
+
+# First, I downloaded listings, reviews, and calendar data from <http://insideairbnb.com/get-the-data/> and began to clean and examine it in Excel. I formatted cells to reflect the correct data type, hid columns that would not be used in my analysis, and removed rows that didn't contain the pertinent information. 
+
+# Next, I created a database and tables in SQLite. I then imported the data from CSV files into the tables.
+
+CREATE TABLE listings (
+    id INTEGER NOT NULL,
+    name TEXT,
+    host_id INTEGER,
+    host_response_time TEXT,
+    host_response_rate TEXT,
+    host_acceptance_rate TEXT,
+    host_is_superhost TEXT,
+    host_neighbourhood TEXT,
+    host_listing_count INTEGER,
+    host_identity_verified TEXT,
+    neighbourhood_cleansed TEXT,
+    latitude NUMERIC,
+    longitude NUMERIC,
+    property_type TEXT,
+    room_type TEXT,
+    accommodates INTEGER,
+    bathrooms_text INTEGER,
+    bedrooms INTEGER,
+    beds INTEGER,
+    amenities TEXT,
+    price NUMERIC,
+    minimum_nights INTEGER,
+    maximum_nights INTEGER
+    has_availability TEXT,
+    availability_30 INTEGER,
+    availability_60 INTEGER,
+    availability_90 INTEGER,
+    availability_365 INTEGER,
+    number_of_reviews INTEGER,
+    first_review TEXT,
+    last_review TEXT,
+    review_scores_rating NUMERIC,
+    review_scores_accuracy NUMERIC,
+    review_scores_cleanliness NUMERIC,
+    review_scores_checkin NUMERIC,
+    review_scores_communication NUMERIC,
+    review_scores_location NUMERIC,
+    review_scores_value NUMERIC,
+    reviews_per_month NUMERIC);
+
+CREATE TABLE reviews (
+    listing_id INTEGER,
+    id INTEGER,
+    date TEXT,
+    reviewer_id INTEGER,
+    reviewer_name TEXT,
+    comments TEXT);
+
+CREATE TABLE calendar (
+    listing_id INTEGER,
+    date TEXT,
+    available TEXT,
+    price NUMERIC,
+    adjusted_price NUMERIC,
+    minimum_nights INTEGER,
+    maximum_nights INTEGER);
