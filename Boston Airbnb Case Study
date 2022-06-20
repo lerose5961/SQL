@@ -1,5 +1,7 @@
 # I wanted to look at Boston Airbnb data to answer questions about the vacation rental market in the Boston area. I analyzed how neighborhoods or amenities influence Airbnb prices, what listings are rented most frequently, and where super hosts are located.
 
+# Some challenges I ran into were that it was difficult to see if the listings were still active. Some didn't have reviews at all, while others didn't have new reviews within the past 2-5 years. This made it difficult to accurately analyze the data. I found that if I filtered the data by recent reviews, it gave me a clearer picture of the data. 
+
 # First, I downloaded listings, reviews, and calendar data from <http://insideairbnb.com/get-the-data/> and began to clean and examine it in Excel. I formatted cells to reflect the correct data type, hid columns that would not be used in my analysis, and removed rows that didn't contain the pertinent information. 
 
 # Next, I created a database and tables in SQLite. I then imported the data from CSV files into the tables.
@@ -61,3 +63,76 @@ CREATE TABLE calendar (
     adjusted_price NUMERIC,
     minimum_nights INTEGER,
     maximum_nights INTEGER);
+    
+# I determined the most expensive neighborhoods by average price.
+
+SELECT neighbourhood_cleansed, ROUND(AVG(price), 2) AS price_avg
+FROM listings
+GROUP BY neighbourhood_cleansed
+ORDER BY price_avg DESC;
+
+# I determined the average price based on the number of people the Airbnb accommodates. 
+
+SELECT accommodates, AVG(price) AS price_avg_accommodates
+FROM listings
+GROUP BY accommodates
+ORDER BY price_avg_accommodates DESC;
+
+# I looked at where the majority of superhosts were located and compared that to the number of superhosts in the neighborhoods with the highest average reviews.
+
+SELECT neighbourhood_cleansed, COUNT(host_is_superhost) AS superhost
+FROM listings
+WHERE host_is_superhost = 't'
+GROUP BY neighbourhood_cleansed
+ORDER BY superhost DESC;
+
+SELECT neighbourhood_cleansed, COUNT(host_is_superhost) AS superhost, ROUND(AVG(review_scores_rating), 2) AS avg_review
+FROM listings
+WHERE host_is_superhost = 't'
+GROUP BY neighbourhood_cleansed
+ORDER BY avg_review DESC;
+
+# I queried the number of each type of property to determine which was most common.
+
+SELECT property_type, COUNT(property_type) AS num_of_props
+FROM listings
+GROUP BY property_type
+ORDER BY num_of_props DESC;
+
+# I queried the type of property and the average rating of each type. I included the number of each property type as well to determine how many ratings the reviews were based off of.
+
+SELECT property_type, COUNT(property_type) AS num_property, ROUND(AVG(review_scores_rating),2) AS avg_rating
+FROM listings
+GROUP BY property_type
+ORDER BY avg_rating DESC;
+
+# I determined the availability of properties in the month of June 2021, as well as their nightly price.
+
+SELECT 
+    DISTINCT c.listing_id, 
+    COUNT(c.available) AS availability,
+    l.name,
+    l.price
+FROM calendar AS c
+JOIN listings AS l
+ON l.id = c.listing_id
+WHERE c.available = 'f' AND date BETWEEN '2021-06-01' AND '2021-06-30'
+GROUP BY c.listing_id
+ORDER BY l.price DESC;
+
+# I looked at Airbnb rentals that would allow for remote work (with WiFi access and a dedicated workspace).
+
+SELECT name, amenities, price
+FROM listings
+WHERE amenities LIKE '%wifi%' AND amenities LIKE '%dedicated workspace%' 
+AND property_type IN ('Entire house', 'Entire condominium', 'Entire apartment')
+AND accommodates <= 2
+AND price < 150
+ORDER BY price DESC;
+
+# I found the properties that were less than $1000/night and had 5 or fewer days available within 90 days, ordered by neighborhood.
+
+SELECT id, name, availability_90, review_scores_rating, neighbourhood_cleansed
+FROM listings
+WHERE price < 1000 AND last_review LIKE '%2020%' OR last_review LIKE '%2021%' AND availability_90 < 5
+ORDER by neighbourhood_cleansed;
