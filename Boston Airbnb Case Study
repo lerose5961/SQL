@@ -136,3 +136,35 @@ SELECT id, name, availability_90, review_scores_rating, neighbourhood_cleansed
 FROM listings
 WHERE price < 1000 AND last_review LIKE '%2020%' OR last_review LIKE '%2021%' AND availability_90 < 5
 ORDER by neighbourhood_cleansed;
+
+# I determined the average number of available days per year in each neighborhood.
+
+SELECT 
+    neighbourhood_cleansed AS neighborhood, 
+    ROUND(AVG(availability_365)) AS avg_year_availability
+FROM listings
+GROUP BY neighborhood
+ORDER BY avg_year_availability DESC;
+
+# I determined the reviewer with the most reviews.
+
+SELECT
+    reviewer_id,
+    COUNT(reviewer_id) AS num_reviews
+FROM reviews
+GROUP BY reviewer_id
+ORDER BY num_reviews DESC;
+
+# I assessed the different types of rooms and properties available.
+
+SELECT room_type,
+    COUNT(room_type) AS num_type_room
+FROM listings
+GROUP BY room_type
+ORDER BY num_type_room;
+
+SELECT property_type,
+    COUNT(property_type) AS num_type_property
+FROM listings
+GROUP BY property_type
+ORDER BY num_type_property DESC;
