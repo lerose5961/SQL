@@ -1,10 +1,10 @@
 # I wanted to analyze Boston Airbnb data to answer questions about the vacation rental market in the Boston area. I analyzed how neighborhoods or amenities influence Airbnb prices, what listings are rented most frequently, and where super hosts are located.
 
-# Some challenges I ran into were that it was difficult to see if the listings were still active. Some didn't have reviews at all, while others didn't have new reviews within the past 2-5 years. This made it difficult to accurately analyze the data. I found that if I filtered the data by recent reviews, it gave me a clearer picture of the data. 
+## Some challenges I ran into were that it was difficult to see if the listings were still active. Some didn't have reviews at all, while others didn't have new reviews within the past 2-5 years. This made it difficult to accurately analyze the data. I found that if I filtered the data by recent reviews, it gave me a clearer picture of the data. 
 
-# First, I downloaded listings, reviews, and calendar data from <http://insideairbnb.com/get-the-data/> and began to clean and examine it in Excel. I formatted cells to reflect the correct data type, hid columns that would not be used in my analysis, and removed rows that didn't contain the pertinent information. 
+### First, I downloaded listings, reviews, and calendar data from <http://insideairbnb.com/get-the-data/> and began to clean and examine it in Excel. I formatted cells to reflect the correct data type, hid columns that would not be used in my analysis, and removed rows that didn't contain the pertinent information. 
 
-# Next, I created a database and tables in SQLite. I then imported the data from CSV files into the tables.
+### Next, I created a database and tables in SQLite. I then imported the data from CSV files into the tables.
 
 CREATE TABLE listings (
     id INTEGER NOT NULL,
